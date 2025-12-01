@@ -27,34 +27,48 @@ function extractMove(input: string): {
 		return { move: null, distance: 0 };
 	}
 }
-function incrementNumber(start: number, move: string | null, distance: number) {
+function incrementNumber(
+	start: number,
+	move: string | null,
+	distance: number,
+): { dialNumber: number; numberOfZeroes: number } {
 	if (distance === 0) {
-		return start;
+		return { dialNumber: start, numberOfZeroes: 1 };
 	}
-	if (move === "L") {
-		if (start === 0) {
-			return incrementNumber(99, move, distance - 1);
+	let dialNumber = start;
+	let numberOfZeroes = 0;
+	for (let i = distance; i > 0; i--) {
+		if (move === "L") {
+			if (dialNumber === 0) {
+				dialNumber = 99;
+			} else {
+				dialNumber--;
+			}
 		}
-		return incrementNumber(start - 1, move, distance - 1);
-	}
-	if (move === "R") {
-		if (start === 99) {
-			return incrementNumber(0, move, distance - 1);
+		if (move === "R") {
+			if (dialNumber === 99) {
+				dialNumber = 0;
+			} else {
+				dialNumber++;
+			}
 		}
-		return incrementNumber(start + 1, move, distance - 1);
+		if (dialNumber === 0) {
+			numberOfZeroes++;
+		}
 	}
-	return 0;
+	return { dialNumber, numberOfZeroes };
 }
 
 (function coutZeros() {
 	const moves = safeSeq.split("\n").reduce(
-		([lastNumber, numberOfZeros], line) => {
+		([lastNumber, pointedAtZeros], line) => {
 			const { move, distance } = extractMove(line);
-			const newNumber = incrementNumber(lastNumber, move, distance);
-			if (newNumber === 0) {
-				return [newNumber, numberOfZeros + 1];
-			}
-			return [newNumber, numberOfZeros];
+			const { dialNumber, numberOfZeroes } = incrementNumber(
+				lastNumber,
+				move,
+				distance,
+			);
+			return [dialNumber, pointedAtZeros + numberOfZeroes];
 		},
 		[dialStart, 0],
 	);
