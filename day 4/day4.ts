@@ -49,24 +49,37 @@ function isPaperAccessible(
 	}
 	return false;
 }
+function removeAccessiblePapers(
+	paperGrid: Array<string[]>,
+): [number, Array<string[]>] {
+	let removed = 0;
+	const gridAfterRemoval = Array.from({ length: paperGrid.length }, () =>
+		Array(paperGrid.length).fill("."),
+	);
 
-(function findAccessablePapers() {
-	const paperGrid = paperRolls.split("\n").map((line) => line.split(""));
-	// const gridAfterRemoval = Array(paperGrid.length).fill(
-	// 	Array(paperGrid.length).fill(".")),
-	// );
-	let result = 0;
 	for (let y = 0; y < paperGrid.length; y++) {
 		for (let x = 0; x < paperGrid[y].length; x++) {
 			if (isPaperAccessible(paperGrid, x, y)) {
-				result++;
+				removed++;
+			} else {
+				if (y === 0 && x === 1) {
+					console.log("debug");
+				}
+				gridAfterRemoval[y][x] = paperGrid[y][x];
 			}
-			// else{
-			// 	gridAfterRemoval[y][x]="@"
-			// }
 		}
 	}
+	return [removed, gridAfterRemoval];
+}
 
+(function findAccessablePapers() {
+	const paperGrid = paperRolls.split("\n").map((line) => line.split(""));
+	let result = 0;
+	let [removed, newGrid] = removeAccessiblePapers(paperGrid);
+	while (removed > 0) {
+		result += removed;
+		[removed, newGrid] = removeAccessiblePapers(newGrid);
+	}
 	console.log(
 		`there are ${result} rolls of paper that can be accessed by a forklift`,
 	);
