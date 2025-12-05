@@ -62,9 +62,6 @@ function removeAccessiblePapers(
 			if (isPaperAccessible(paperGrid, x, y)) {
 				removed++;
 			} else {
-				if (y === 0 && x === 1) {
-					console.log("debug");
-				}
 				gridAfterRemoval[y][x] = paperGrid[y][x];
 			}
 		}
