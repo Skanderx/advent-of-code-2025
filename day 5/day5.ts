@@ -24,4 +24,40 @@ try {
 	}, 0);
 
 	console.log(`${result} of the available ingredient IDs are fresh`);
+
+	const mergedRange = intRanges
+		.sort(([a], [b]) => a - b)
+		.reduce(
+			(sum, [start, end]) => {
+				// Initial merge
+				if (sum.current_merged_Range[1] === -1) {
+					return {
+						current_merged_Range: [start, end],
+						total: sum.total,
+					};
+				}
+				const [currStart, currEnd] = sum.current_merged_Range;
+
+				if (start <= currEnd) {
+					// [ currStart, ... ,start, ..., currEnd, ..., end]
+					return {
+						current_merged_Range: [currStart, Math.max(end, currEnd)],
+						total: sum.total,
+					};
+				}
+
+				// [ currStart, ..., currEnd] [start..., end]
+				return {
+					current_merged_Range: [start, end],
+					total: sum.total + currEnd - currStart + 1,
+				};
+			},
+			{ current_merged_Range: [-1, -1], total: 0 },
+		);
+	const part2Result =
+		mergedRange.total +
+		mergedRange.current_merged_Range[1] -
+		mergedRange.current_merged_Range[0] +
+		1;
+	console.log(`a total of ${part2Result} ingredient IDs to be fresh.`); // 334275807686477 / 334275807686477 // 353507173555373
 })();
