@@ -59,5 +59,5 @@ try {
 		mergedRange.current_merged_Range[1] -
 		mergedRange.current_merged_Range[0] +
 		1;
-	console.log(`a total of ${part2Result} ingredient IDs to be fresh.`); // 334275807686477 / 334275807686477 // 353507173555373
+	console.log(`a total of ${part2Result} ingredient IDs to be fresh.`);
 })();
